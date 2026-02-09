@@ -1,0 +1,13 @@
+# Archivos de sistema (macOS)
+.DS_Store
+
+# Archivos de salida del programa
+output/
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Entornos virtuales
+venv/
+.venv/
