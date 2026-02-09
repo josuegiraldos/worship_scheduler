@@ -139,11 +139,6 @@ Por motivos de seguridad y privacidad, el sistema no incluye un número de telé
 ## 👤 Autor
 
 **Josué Gabriel Giraldo Suárez**
-* **Ingeniero de Sistemas (8vo semestre)** - Universidad Nacional Abierta y a Distancia (UNAD).
-* **Técnico Laboral por Competencias en Programación de Software** - Campuslands S.A.S BIC.
-* **LinkedIn:** [linkedin.com/in/josuegiraldos](https://www.linkedin.com/in/josuegiraldos)
-* **GitHub:** [github.com/josuegiraldos](https://github.com/josuegiraldos)
-* **Email:** jggiraldosuarez2411@gmail.com
 
 ---
 *Desarrollado con pasión por la música y los datos.* 🎶👨‍💻
