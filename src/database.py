@@ -13,6 +13,21 @@ RUTA_JSON = os.path.join(CARPETA_OUTPUT, "memoria_alabanza.json")
 RUTA_WHATSAPP = os.path.join(CARPETA_OUTPUT, "mensaje_whatsapp.txt")
 RUTA_EXCEL_MAESTRO = os.path.join(CARPETA_OUTPUT, "Cronograma_Maestro.xlsx")
 
+MESES = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+    ]
+
 # Crear carpetas si no existen
 if not os.path.exists(CARPETA_DATA):
     os.makedirs(CARPETA_DATA)
@@ -55,15 +70,12 @@ def generar_texto_whatsapp(df):
     numero_destino = ""
     param_txt = "&text="
     hoy = datetime.now()
-    
+
     # Calcular próximo jueves
     dias_hasta_jueves = (3 - hoy.weekday() + 7) % 7
     fecha_base = hoy + timedelta(days=dias_hasta_jueves)
 
-    meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-             
-    f_formato = lambda d: f"{d.day:02d} {meses[d.month-1]} {d.year}"
+    f_formato = lambda d: f"{d.day:02d} {MESES[d.month-1]} {d.year}"
 
     fechas = {
         "Jueves": f_formato(fecha_base),
@@ -83,7 +95,7 @@ def generar_texto_whatsapp(df):
         contenido += f"*Congas🪘:* {fila['Congas']}.\n"
         contenido += f"*Voz líder🎤:* {fila['Lider']}.\n"
         contenido += f"*Voces de apoyo:*\n"
-        
+
         for apoyo in fila["Apoyos"].split(", "):
             if apoyo != "Pendiente":
                 contenido += f"🎤 {apoyo}.\n"
@@ -97,7 +109,7 @@ def generar_texto_whatsapp(df):
 
     os.system(f"open '{url_final}'")
     os.system(f"open '{RUTA_WHATSAPP}'")
-    
+
     return RUTA_WHATSAPP
 
 
@@ -115,10 +127,8 @@ def guardar_en_excel_maestro(df_nuevo):
         "Dominical": f_formato(fecha_base + timedelta(days=3)),
         "Domingo tarde": f_formato(fecha_base + timedelta(days=3)),
     }
-    
-    meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", 
-             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
-    nombre_mes = meses[hoy.month - 1]
+
+    nombre_mes = MESES[hoy.month - 1]
 
     df_temp.insert(0, "Fecha_registro", hoy.strftime("%Y-%m-%d"))
     df_temp.insert(1, "Mes", nombre_mes)
@@ -126,14 +136,18 @@ def guardar_en_excel_maestro(df_nuevo):
 
     if os.path.exists(RUTA_EXCEL_MAESTRO):
         df_historial = pd.read_excel(RUTA_EXCEL_MAESTRO)
-        duplicados = df_temp[df_temp["Fecha_servicio"].isin(df_historial["Fecha_servicio"])]
-        
+        duplicados = df_temp[
+            df_temp["Fecha_servicio"].isin(df_historial["Fecha_servicio"])
+        ]
+
         if not duplicados.empty:
             print("¡Alerta! Hay filas duplicadas.")
             res = input("¿Desea sobreescribir los datos? Y/N: ")
-            
+
             if res.upper() == "Y":
-                df_historial_limpio = df_historial[~df_historial["Fecha_servicio"].isin(df_temp["Fecha_servicio"])]
+                df_historial_limpio = df_historial[
+                    ~df_historial["Fecha_servicio"].isin(df_temp["Fecha_servicio"])
+                ]
                 df_total = pd.concat([df_historial_limpio, df_temp], ignore_index=True)
                 print("✅ Se sobrescribieron los datos.")
             else:
@@ -149,3 +163,13 @@ def guardar_en_excel_maestro(df_nuevo):
         print("✅ ¡Excel guardado con éxito!")
     except PermissionError:
         print("❌ ERROR: Cierra el archivo Excel y vuelve a intentarlo.")
+
+
+def cargar_historico_maestro():
+    if not os.path.exists(RUTA_EXCEL_MAESTRO):
+        print(f"⚠️ Aviso: No se encontró el histórico en {RUTA_EXCEL_MAESTRO}. Retornando DataFrame vacío.")
+        return pd.DataFrame() # Retorna un contenedor vacío para no romper el programa
+    
+    df = pd.read_excel(RUTA_EXCEL_MAESTRO)
+    df.columns = df.columns.str.strip()
+    return df
