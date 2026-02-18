@@ -3,6 +3,7 @@
 
 # Archivos de salida del programa
 output/
+input/
 
 # Archivos temporales de Python
 __pycache__/
