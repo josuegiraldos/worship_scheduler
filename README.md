@@ -1,32 +1,37 @@
-# 🎹 Gestor Automatizado de Cronogramas de Alabanza
+# 🎹 Gestor automatizado de cronogramas de alabanza
 
 > **Un sistema ETL automatizado para la gestión, rotación y asignación inteligente de músicos, construido con Python y Pandas.**
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue) ![Pandas](https://img.shields.io/badge/Pandas-Data%20Analysis-green) ![Status](https://img.shields.io/badge/Status-Production-brightgreen)
 
-## 📖 Descripción del Proyecto
+## 📖 Descripción del proyecto
 
 Este proyecto nació de la necesidad de optimizar la gestión de un equipo de alabanza de más de 20 integrantes. La asignación manual generaba errores humanos, repetición de músicos y falta de trazabilidad histórica.
 
-El sistema actúa como un **Asistente Inteligente** que:
-1.  **Extrae** la disponibilidad y roles de una base de datos (Excel).
-2.  **Transforma** los datos aplicando reglas de negocio complejas (descansos, rotación de líderes, equidad).
-3.  **Carga** los resultados en un reporte histórico (Excel Maestro) y exporta el cronograma automáticamente a WhatsApp.
+El sistema actúa como un **Asistente inteligente** que:
+1.  **Extrae (Extract):** Lee la disponibilidad y roles desde un archivo Excel.
+2.  **Transforma (Transform):** Aplica reglas de negocio (descansos, equidad, rotación) y valida las entradas mediante lógica difusa.
+3.  **Carga (Load):** Actualiza el histórico maestro y genera notificaciones automáticas.
+4.  **Analiza (Analyze):** Genera reportes visuales sobre la participación del equipo.
 
-## 🚀 Características Principales
+## 🚀 Características principales
 
-* **🔄 Lógica de Rotación Inteligente:** Algoritmo que asegura que los líderes de alabanza no repitan consecutivamente y que los músicos tengan periodos de descanso adecuados.
-* **🛡️ Algoritmo de "Rescate" (Plan B):** Implementación de una lógica de *fallback*. Si el filtro estricto no encuentra candidatos disponibles, el sistema relaja las restricciones automáticamente para garantizar que ningún puesto quede vacío ("Pendiente").
-* **💾 Persistencia de Datos:** Uso de archivos JSON para dotar al programa de "memoria", permitiéndole recordar quién tocó la semana pasada para tomar decisiones futuras.
-* **📊 Integridad de Datos:** Sistema de validación de duplicados que detecta si un cronograma ya existe en el Histórico Maestro, ofreciendo opciones de sobrescritura o preservación de datos.
-* **📱 Automatización de Salidas:** Generación automática de enlaces para envío de cronogramas vía WhatsApp y actualización de bitácora en Excel.
+* **🔄 Lógica de rotación inteligente:** Algoritmo que asegura que los líderes no repitan consecutivamente y que los músicos tengan periodos de descanso adecuados.
+* **🛡️ Algoritmo de "rescate" (plan B):** Lógica de *fallback* que relaja restricciones automáticamente si no hay candidatos disponibles para garantizar el servicio.
+* **💾 Persistencia de Datos:**  Uso de archivos JSON para dotar al programa de "memoria", permitiéndole recordar quién tocó la semana pasada para tomar decisiones futuras.
+* **📊 Integridad de datos:** Sistema de validación de duplicados que detecta si un cronograma ya existe en el Histórico Maestro, ofreciendo opciones de sobrescritura o preservación de datos.
+* **🧠 Validación inteligente (Fuzzy Matching):** Interfaz que utiliza `difflib` para sugerir correcciones si el usuario comete errores al escribir roles o meses.
+* **📊 Dashboard de análisis:** Visualización de estadísticas de participación mediante gráficas generadas con **Matplotlib**.
+* **📱 Automatización de salidas:** Generación de enlaces directos para WhatsApp.
 
 ## 🛠️ Tecnologías Utilizadas
 
-* **Python:** Lenguaje principal.
-* **Pandas:** Manipulación de DataFrames, limpieza de datos y operaciones ETL (Extract, Transform, Load).
+* **Python:** Lenguaje base del proyecto.
+* **Pandas:** Manipulación de DataFrames, limpieza de datos, operaciones ETL (Extract, Transform, Load) y lógica de filtrado.
+* **Matplotlib:** Generación de gráficas estadísticas.
+* **Difflib & Unicodedata:** Motor de sugerencias y normalización de texto (limpieza de tildes).
 * **OpenPyXL:** Motor de escritura para archivos Excel.
-* **JSON:** Gestión de almacenamiento de estados (memoria del programa).
+* **JSON:** Manejo de "memoria" del programa (estados anteriores).
 * **OS/Sys:** Automatización de tareas del sistema operativo.
 
 ## 📂 Estructura del Proyecto
@@ -37,15 +42,17 @@ El código sigue una arquitectura modular para facilitar el mantenimiento y la e
 📁 Worship-Scheduler/
 │
 ├── 📁 src/
-│   ├── main.py          # Punto de entrada. Orquestador del flujo.
-│   ├── scheduler.py     # Lógica algorítmica y reglas de asignación.
-│   └── database.py      # Capa de manejo de datos (Lectura/Escritura Excel & JSON).
+│   ├── main.py          # Punto de entrada y orquestador.
+│   ├── scheduler.py     # Algoritmos de asignación y reglas de negocio.
+│   ├── database.py      # Capa de datos (Excel, JSON, WhatsApp).
+│   ├── analisis.py      # Procesamiento de métricas y gráficas.
+│   └── interface.py     # Interfaz de consola y validación inteligente.
 │
 ├── 📁 data/
-│   ├── 📁 input/        # Fuente de datos (integrantes.xlsx).
-│   └── 📁 output/       # Resultados (Cronograma_Maestro.xlsx, mensajes).
+│   ├── 📁 input/        # Fuente: integrantes.xlsx.
+│   └── 📁 output/       # Resultados: Cronograma_Maestro.xlsx y reportes.
 │
-└── README.md            # Documentación del proyecto.
+└── README.md            # Documentación.
 ```
 
 ## 📊 Diccionario de Datos (Estructura de `integrantes.xlsx`)
@@ -78,33 +85,36 @@ Al ejecutar el sistema, se genera automáticamente un mensaje con formato profes
 El sistema genera un mensaje formateado listo para ser enviado por redes sociales:
 
 > 📢 **CRONOGRAMA DE ALABANZA** 📢
-> 
+>
 > **Jueves, 12 Febrero 2026**
 > *Piano🎹:* Juan Pérez.
 > *Bateria🥁:* Andrés López.
 > ... (etc)
 
-## 🧠 Lógica de Negocio y Algoritmos
+## 🧠 Lógica de negocio y algoritmos
 
-El corazón del proyecto reside en `scheduler.py`. El proceso de asignación sigue estos pasos:
+El "cerebro" del proyecto se encuentra en la interacción entre `scheduler.py`, `interface.py` y `database.py`. El sistema no solo asigna nombres, sino que razona basándose en reglas de convivencia y disponibilidad.
 
-1.  **Filtrado Inicial:** Se excluyen músicos que tocaron el servicio inmediatamente anterior (regla de descanso).
-2.  **Asignación Prioritaria:** Se asignan roles críticos (Piano, Voz Líder) bajo reglas estrictas.
-3.  **Gestión de Bolsas (Pools):** Se utilizan "bolsas semanales" para evitar que un músico repita instrumento en la misma semana, a menos que sea estrictamente necesario.
-4.  **Manejo de Excepciones:** Se implementan cuotas fijas para casos especiales (ej. pianista principal).
+### 🔍 Validación inteligente (Fuzzy Logic)
+Para evitar que el programa falle por errores de escritura (typos) o diferencias en tildes, implementamos una función de validación universal:
+1.  **Normalización:** Se eliminan marcas diacríticas y se estandariza a minúsculas mediante `unicodedata`.
+2.  **Mapeo Dinámico:** Se construye un "traductor" (diccionario) que vincula la entrada simplificada del usuario con la columna exacta de la base de datos.
+3.  **Sugerencias:** Si la entrada no es exacta, el sistema utiliza el algoritmo de *Gestalt Pattern Matching* (`difflib`) para ofrecer la opción más probable (ej: "¿Quisiste decir 'Batería'?").
 
-### El Reto de los Datos Duplicados
+### 🛡️ Protección de integridad (SSOT)
+En el módulo `database.py`, se implementó una lógica de protección de datos para que el *histórico maestro* sea siempre la "única fuente de verdad" (Single Source of Truth):
+* **Detección de Conflictos:** El sistema compara las fechas nuevas con las existentes mediante `.isin()`.
+* **Intervención Humana:** Ante un duplicado, el programa detiene la ejecución y solicita una decisión: ¿Sobrescribir datos, Posponer la carga o Cancelar el proceso?
 
-En el módulo `database.py`, se implementó una lógica de protección de datos:
-* Al intentar guardar, el sistema compara las fechas nuevas con el histórico usando `.isin()`.
-* Si detecta conflicto, solicita intervención humana: **¿Sobrescribir, Posponer o Cancelar?**
-* Esto asegura que el *Cronograma Maestro* sea una fuente única de verdad (SSOT).
+### 🔄 Lógica de rotación y rescate
+* **Descansos automáticos:** El algoritmo excluye a los músicos que participaron en el servicio anterior.
+* **Algoritmo de fallback:** Si los filtros estrictos (descanso + disponibilidad) dejan un puesto vacío, el sistema activa un modo de "rescate" que relaja las restricciones para asegurar que el cronograma siempre se complete.
 
 ## 🔧 Instalación y Uso
 
 1.  **Clonar el repositorio:**
     ```bash
-    git clone [https://github.com/tu-usuario/worship-scheduler.git](https://github.com/tu-usuario/worship-scheduler.git)
+    git clone (https://github.com/tu-usuario/worship-scheduler.git)
     ```
 
 2.  **Instalar dependencias:**
@@ -113,28 +123,19 @@ En el módulo `database.py`, se implementó una lógica de protección de datos:
     ```
 
 3.  **Configurar datos:**
-    Asegúrate de tener el archivo `integrantes.xlsx` en la carpeta `data/input/`.
+    Coloca tu archivo `integrantes.xlsx` en la carpeta `data/input/`.
 
 4.  **Ejecutar:**
     ```bash
     python src/main.py
     ```
-## ⚙️ Configuración Requerida
-
-Por motivos de seguridad y privacidad, el sistema no incluye un número de teléfono preconfigurado. Para que la función de notificación automática funcione, debes:
-
-1. Abrir el archivo `src/database.py`.
-2. Buscar la función `generar_texto_whatsapp`.
-3. Localizar la variable `numero_destino`.
-4. Ingresar el número en formato internacional (ej: `"573001234567"` para Colombia).
-
-> **Nota:** Se recomienda el uso de variables de entorno para manejar datos sensibles en entornos de producción.
 
 ## 📈 Próximos Pasos (Roadmap)
 
-- [ ] Implementar un dashboard de análisis con **Matplotlib** para visualizar estadísticas de participación.
-- [ ] Migrar la persistencia de datos de Excel/JSON a una base de datos **SQLite**.
-- [ ] Crear una interfaz gráfica (GUI) o web sencilla.
+- [x] Implementar dashboard de análisis con **Matplotlib** para visualizar estadísticas.
+- [x] Interfaz de validación inteligente de entradas (Fuzzy matching).
+- [ ] Migrar la persistencia de datos de Excel a una base de datos **SQLite**.
+- [ ] Desarrollar una interfaz gráfica (GUI) con **CustomTkinter**.
 
 ## 👤 Autor
 
