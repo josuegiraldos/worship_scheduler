@@ -2,8 +2,8 @@
 .DS_Store
 
 # Archivos de salida del programa
-output/
-input/
+data/output/
+data/input/
 
 # Archivos temporales de Python
 __pycache__/

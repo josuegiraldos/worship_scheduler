@@ -92,7 +92,7 @@ def crear_cronograma(lista_servicios):
     pool_apoyo_total = list(
         integrantes_alabanza["Lideres"]
         + integrantes_alabanza["Voces"]
-        + integrantes_alabanza["Apoyo"]
+        + integrantes_alabanza["Apoyos"]
     )
     conteo_apoyos = {persona: 0 for persona in pool_apoyo_total}
 
@@ -106,7 +106,7 @@ def crear_cronograma(lista_servicios):
     bolsas_inst = {
         rol: list(integrantes_alabanza[rol])
         for rol in integrantes_alabanza
-        if rol not in ["Lideres", "Apoyo"]
+        if rol not in ["Lideres", "Apoyos"]
     }
 
     instrumentos = ["Piano", "Guitarra", "Bajo", "Bateria", "Congas"]
@@ -181,19 +181,19 @@ def crear_cronograma(lista_servicios):
         while len(seleccionados_voces) < 2:
             seleccionados_voces.append("Pendiente voz")
 
-        # 4. Asignar Apoyo (General)
+        # 4. Asignar Apoyos (General)
         candidatos_apoyo = [
             p
-            for p in integrantes_alabanza["Apoyo"]
+            for p in integrantes_alabanza["Apoyos"]
             if p not in ocupados_hoy and p not in descansan_hoy
         ]
         
-        # Plan B Apoyo: Buscar refuerzos (solo del grupo Apoyo)
+        # Plan B Apoyos: Buscar refuerzos (solo del grupo Apoyos)
         if len(candidatos_apoyo) < 1:
             refuerzos = [
                 p
                 for p in pool_apoyo_total
-                if p in integrantes_alabanza["Apoyo"]
+                if p in integrantes_alabanza["Apoyos"]
                 and p not in ocupados_hoy
                 and p not in candidatos_apoyo
             ]

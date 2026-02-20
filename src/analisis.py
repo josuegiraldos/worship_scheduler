@@ -3,6 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from src.database import CARPETA_OUTPUT
 
+CARPETA_REPORTES = os.path.join(CARPETA_OUTPUT, "reportes")
+
 def obtener_conteo_mensual(df, mes, anio, rol):
     df["Fecha_servicio"] = pd.to_datetime(df["Fecha_servicio"], dayfirst = True)
     
@@ -42,7 +44,7 @@ def generar_grafica_reporte(conteo, mes, anio, rol):
     
     # Guardado automático
     nombre_archivo = f"reporte_{rol}_{mes}_{anio}.png"
-    ruta_final = os.path.join(CARPETA_OUTPUT, nombre_archivo)
+    ruta_final = os.path.join(CARPETA_REPORTES, nombre_archivo)
     # Siempre se guarda primero
     fig.savefig(ruta_final, dpi = 300, bbox_inches = "tight")
     
