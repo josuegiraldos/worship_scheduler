@@ -63,7 +63,7 @@ Para que el algoritmo de asignación y la carga de datos funcionen correctamente
 | :--- | :--- |
 | **Lideres** | Cantantes capacitados para dirigir la alabanza. |
 | **Voces** | Cantantes principales asignados para el servicio. |
-| **Apoyo** | Voces de acompañamiento y coros. |
+| **Apoyos** | Voces de acompañamiento y coros. |
 | **Piano** | Músicos encargados del teclado/piano. |
 | **Bajo** | Músicos encargados del bajo eléctrico. |
 | **Bateria** | Músicos encargados de la batería. |
