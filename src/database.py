@@ -86,6 +86,8 @@ def generar_texto_whatsapp(df):
 
     contenido = "📢 *CRONOGRAMA DE ALABANZA* 📢\n\n"
     for _, fila in df.iterrows():
+        texto_voces = "\n".join([f"🎤 {v}." for v in fila["Voces"].split(", ")])
+        texto_apoyos = "\n".join([f"🎤 {v}." for v in fila["Apoyos"].split(", ")])
         servicio = fila["Servicio"]
         contenido += f"*{servicio}, {fechas.get(servicio)}*\n"
         contenido += f"*Piano🎹:* {fila['Piano']}.\n"
@@ -94,11 +96,8 @@ def generar_texto_whatsapp(df):
         contenido += f"*Bajo🎸:* {fila['Bajo']}.\n"
         contenido += f"*Congas🪘:* {fila['Congas']}.\n"
         contenido += f"*Voz líder🎤:* {fila['Lider']}.\n"
-        contenido += f"*Voces de apoyo:*\n"
-
-        for apoyo in fila["Apoyos"].split(", "):
-            if apoyo != "Pendiente":
-                contenido += f"🎤 {apoyo}.\n"
+        contenido += f"*Voces:*\n{texto_voces}\n\n"
+        contenido += f"*Apoyos:*\n{texto_apoyos}\n"
         contenido += "\n" + "—" * 15 + "\n\n"
 
     with open(RUTA_WHATSAPP, "w", encoding="utf-8") as f:
