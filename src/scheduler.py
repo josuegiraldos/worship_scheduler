@@ -43,7 +43,7 @@ def asignar_musico(
         elif candidatos:
             musico = random.choice(candidatos)
         else:
-            musico = "Pendiente asignacion"
+            musico = "Pendiente"
     else:
         # Plan A: Buscar en la bolsa semanal
         candidatos = [p for p in bolsa_semanal[nombre_rol] if es_disponible(p)]
@@ -52,10 +52,10 @@ def asignar_musico(
         if not candidatos:
             candidatos = [p for p in integrantes[nombre_rol] if es_disponible(p)]
             
-        musico = random.choice(candidatos) if candidatos else "Pendiente asignacion"
+        musico = random.choice(candidatos) if candidatos else "Pendiente"
 
     # Actualizar listas de control
-    if musico != "Pendiente asignacion":
+    if musico != "Pendiente":
         ocupados_hoy.append(musico)
         proximos_servicios_josue = [idx for idx in indices_josue if idx > i]
 
@@ -119,7 +119,7 @@ def crear_cronograma(lista_servicios):
         # Determinar quién descansa (basado en el día anterior)
         if i > 0:
             anterior = data[i - 1]
-            descansan_hoy = [anterior[1]] + anterior[2].split(", ")
+            descansan_hoy = [anterior[1]] + anterior[2].split(", ") + anterior[3].split(", ")
 
         # 1. Asignar Voz Líder
         lider_pasado = cronograma_anterior.get(servicio, {}).get("Lider")
@@ -179,7 +179,7 @@ def crear_cronograma(lista_servicios):
         
         # Relleno final si aún faltan
         while len(seleccionados_voces) < 2:
-            seleccionados_voces.append("Pendiente voz")
+            seleccionados_voces.append("Pendiente")
 
         # 4. Asignar Apoyos (General)
         candidatos_apoyo = [
@@ -207,7 +207,7 @@ def crear_cronograma(lista_servicios):
             conteo_apoyos[v] += 1
             
         while len(seleccionados_apoyo) < 1:
-            seleccionados_apoyo.append("Pendiente apoyo")
+            seleccionados_apoyo.append("Pendiente")
 
         # Consolidar datos del servicio
         voces_finales = seleccionados_voces + seleccionados_apoyo
@@ -215,12 +215,14 @@ def crear_cronograma(lista_servicios):
         fila_data = [
             servicio,
             voz_lider,
-            ", ".join(voces_finales),
+            ", ".join(seleccionados_voces),
+            ", ".join(seleccionados_apoyo)
         ]
 
         nuevo_historial[servicio] = {
             "Lider": voz_lider,
-            "Apoyos": fila_data[2],
+            "Voces": fila_data[2],
+            "Apoyos": fila_data[3]
         }
 
         for inst in instrumentos:
@@ -232,7 +234,7 @@ def crear_cronograma(lista_servicios):
     # Guardar memoria y retornar DataFrame
     guardar_memoria(nuevo_historial)
 
-    cabeceras_fijas = ["Servicio", "Lider", "Apoyos"]
+    cabeceras_fijas = ["Servicio", "Lider", "Voces", "Apoyos"]
     extras = instrumentos
     lista_completa = cabeceras_fijas + extras
     
